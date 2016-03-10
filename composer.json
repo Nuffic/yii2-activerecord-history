@@ -1,0 +1,15 @@
+{
+  "name": "nuffic/yii2-activerecord-history",
+  "description": "ActiveRecord history for Yii 2",
+  "authors": [
+    {
+      "name": "Kaupo Juhkam",
+      "email": "kaupojuhkam@live.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "nuffic\\activerecord\\history\\": "src"
+    }
+  }
+}
