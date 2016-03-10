@@ -7,6 +7,8 @@ use yii\db\BaseActiveRecord;
 use yii\di\Instance;
 use yii\db\Connection;
 use yii\helpers\Json;
+use yii\db\AfterSaveEvent;
+use yii\base\ModelEvent;
 
 class DbHistoryLogger extends Component
 {
@@ -32,9 +34,16 @@ class DbHistoryLogger extends Component
         $pk = is_array($event->sender->primaryKey)?Json::encode($event->sender->primaryKey):$event->sender->primaryKey;
         $changed = date('Y-m-d H:i:s');
 
+        $changedAttributes = [];
+        if ($event instanceof AfterSaveEvent) {
+            $changedAttributes=$event->changedAttributes;
+        } elseif ($event instanceof ModelEvent && $event->name == BaseActiveRecord::EVENT_BEFORE_DELETE) {
+            $changedAttributes=$event->sender->attributes;
+        }
+
         $batch = array_map(function ($changedAttribute, $oldValue) use ($tableName, $pk, $changed) {
             return [$tableName, $pk, $changedAttribute, $oldValue, $changed];
-        }, array_keys($event->changedAttributes), array_values($event->changedAttributes));
+        }, array_keys($changedAttributes), array_values($changedAttributes));
 
         $this->db->createCommand()->batchInsert($this->tableName, ['table_name', 'field_id', 'field_name', 'old_value', 'created_at'], $batch)->execute();
     }

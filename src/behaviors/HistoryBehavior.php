@@ -10,8 +10,7 @@ class HistoryBehavior extends Behavior
 {
     public $events = [
         BaseActiveRecord::EVENT_AFTER_UPDATE,
-        BaseActiveRecord::EVENT_AFTER_DELETE,
-        //BaseActiveRecord::EVENT_AFTER_INSERT,
+        BaseActiveRecord::EVENT_BEFORE_DELETE,
     ];
 
     public $historyComponent = 'arHistory';
