@@ -6,12 +6,12 @@ use Yii;
 use yii\base\Behavior;
 use yii\db\BaseActiveRecord;
 
-class History extends Behavior
+class HistoryBehavior extends Behavior
 {
     public $events = [
         BaseActiveRecord::EVENT_AFTER_UPDATE,
         BaseActiveRecord::EVENT_AFTER_DELETE,
-        BaseActiveRecord::EVENT_AFTER_INSERT,
+        //BaseActiveRecord::EVENT_AFTER_INSERT,
     ];
 
     public $historyComponent = 'arHistory';
@@ -28,9 +28,9 @@ class History extends Behavior
         return $events;
     }
 
-    public function saveHistory($e)
+    public function saveHistory($event)
     {
         $historyComponent = Yii::$app->get('arHistory');
-        $historyComponent->save($e);
+        $historyComponent->save($event);
     }
 }

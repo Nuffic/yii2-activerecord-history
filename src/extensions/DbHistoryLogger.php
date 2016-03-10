@@ -4,19 +4,38 @@ namespace nuffic\activerecord\history\extensions;
 
 use yii\base\Component;
 use yii\db\BaseActiveRecord;
+use yii\di\Instance;
+use yii\db\Connection;
+use yii\helpers\Json;
 
 class DbHistoryLogger extends Component
 {
     public $tableName = 'history';
 
+    /**
+     * @var Connection
+     */
     public $db = 'db';
 
-    public function save($e)
+    public function init()
     {
-        if (!($e->sender instanceof BaseActiveRecord)) {
+        $this->db = Instance::ensure($this->db, Connection::className());
+    }
+
+    public function save($event)
+    {
+        if (!($event->sender instanceof BaseActiveRecord)) {
             return;
         }
-        #var_dump($this->tableName);
-        var_dump($e->changedAttributes);
+
+        $tableName = $event->sender->tableName();
+        $pk = is_array($event->sender->primaryKey)?Json::encode($event->sender->primaryKey):$event->sender->primaryKey;
+        $changed = date('Y-m-d H:i:s');
+
+        $batch = array_map(function ($changedAttribute, $oldValue) use ($tableName, $pk, $changed) {
+            return [$tableName, $pk, $changedAttribute, $oldValue, $changed];
+        }, array_keys($event->changedAttributes), array_values($event->changedAttributes));
+
+        $this->db->createCommand()->batchInsert($this->tableName, ['table_name', 'field_id', 'field_name', 'old_value', 'created_at'], $batch)->execute();
     }
 }
