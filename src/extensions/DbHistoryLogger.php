@@ -45,6 +45,8 @@ class DbHistoryLogger extends Component
             return [$tableName, $pk, $changedAttribute, $oldValue, $changed];
         }, array_keys($changedAttributes), array_values($changedAttributes));
 
-        $this->db->createCommand()->batchInsert($this->tableName, ['table_name', 'field_id', 'field_name', 'old_value', 'created_at'], $batch)->execute();
+        if (count($batch)) {
+            $this->db->createCommand()->batchInsert($this->tableName, ['table_name', 'field_id', 'field_name', 'old_value', 'created_at'], $batch)->execute();
+        }
     }
 }
