@@ -11,5 +11,8 @@
     "psr-4": {
       "nuffic\\activerecord\\history\\": "src"
     }
+  },
+  "require": {
+    "p2made/yii2-uuid": "*"
   }
 }
