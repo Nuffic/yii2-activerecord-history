@@ -3,15 +3,17 @@
 namespace nuffic\activerecord\history\extensions;
 
 use Ramsey\Uuid\Uuid;
-use yii\base\Component;
+
 use yii\db\BaseActiveRecord;
 use yii\di\Instance;
 use yii\db\Connection;
 use yii\helpers\Json;
 use yii\db\AfterSaveEvent;
 use yii\base\ModelEvent;
+use yii\db\Query;
+use yii\data\ArrayDataProvider;
 
-class DbHistoryLogger extends Component
+class DbHistoryLogger extends BaseHistoryLogger implements HistoryLoggerInterface
 {
     const EVENT_UPDATE = 0;
     const EVENT_DELETE = 1;
@@ -25,10 +27,11 @@ class DbHistoryLogger extends Component
 
     public function init()
     {
+        parent::init();
         $this->db = Instance::ensure($this->db, Connection::className());
     }
 
-    public function save($event)
+    public function save(\yii\base\Event $event)
     {
         if (!($event->sender instanceof BaseActiveRecord)) {
             return;
@@ -55,5 +58,38 @@ class DbHistoryLogger extends Component
         if (count($batch)) {
             $this->db->createCommand()->batchInsert($this->tableName, ['table_name', 'field_id', 'field_name', 'old_value', 'created_at', 'action_uuid', 'event'], $batch)->execute();
         }
+    }
+
+    public function retrieve($className, $primaryKey)
+    {
+        $tableName = call_user_func([$className, "tableName"]);
+
+        $current = $className::find()->where(['id' => $primaryKey])->asArray()->one();
+
+        $query = new Query();
+        $query->select(['field_name', 'old_value', 'event', 'action_uuid', 'created_at']);
+        $query->from($this->tableName);
+        $query->orderBy(['created_at' => SORT_ASC]);
+
+        $changes = [];
+
+        foreach ($query->all() as $element) {
+            $uuid = $element['action_uuid'];
+            if(!isset($changes[$uuid])) {
+                $changes[$uuid] = $current;
+            }
+            $changes[$uuid][$element['field_name']]=$element['old_value'];
+            $current = $changes[$uuid];
+        }
+        
+        $models = array_map(function ($element) use ($className){
+            $model = $className::instantiate($element);
+            $className::populateRecord($model, $element);
+            return $model;
+        }, $changes);
+
+        return new ArrayDataProvider([
+            'allModels' => array_values($models)
+        ]);
     }
 }

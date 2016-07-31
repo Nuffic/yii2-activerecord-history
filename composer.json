@@ -1,6 +1,7 @@
 {
   "name": "nuffic/yii2-activerecord-history",
   "description": "ActiveRecord history for Yii 2",
+  "type": "yii2-extension",
   "authors": [
     {
       "name": "Kaupo Juhkam",
