@@ -16,7 +16,7 @@ class BaseHistoryLogger extends Component
     {
         $config = [
             'class' => 'yii\i18n\PhpMessageSource',
-            'basePath' => "@nuffic/activerecord-history/messages",
+            'basePath' => "@nuffic/activerecord/history/messages",
             'forceTranslation' => true
         ];
         $globalConfig = ArrayHelper::getValue(Yii::$app->i18n->translations, "arHistory*", []);

@@ -13,7 +13,7 @@ use yii\base\ModelEvent;
 use yii\db\Query;
 use yii\data\ArrayDataProvider;
 
-class DbHistoryLogger extends BaseHistoryLogger implements HistoryLoggerInterface
+class DbHistoryLogger extends BaseHistoryLogger implements RetrievableHistoryLoggerInterface
 {
     const EVENT_UPDATE = 0;
     const EVENT_DELETE = 1;
