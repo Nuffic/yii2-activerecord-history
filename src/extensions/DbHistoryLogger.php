@@ -69,6 +69,10 @@ class DbHistoryLogger extends BaseHistoryLogger implements RetrievableHistoryLog
         $query = new Query();
         $query->select(['field_name', 'old_value', 'event', 'action_uuid', 'created_at']);
         $query->from($this->tableName);
+        $query->where([
+            'field_id' => $primaryKey,
+            'table_name' => $tableName
+        ]);
         $query->orderBy(['created_at' => SORT_ASC]);
 
         $changes = [];
