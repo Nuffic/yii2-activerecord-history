@@ -3,7 +3,7 @@
 namespace nuffic\activerecord\history\extensions;
 
 /**
-* 
+*
 */
 interface RetrievableHistoryLoggerInterface extends HistoryLoggerInterface
 {

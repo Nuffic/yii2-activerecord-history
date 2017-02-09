@@ -62,7 +62,7 @@ class DbHistoryLogger extends BaseHistoryLogger implements RetrievableHistoryLog
 
     public function retrieve($className, $primaryKey)
     {
-        $tableName = call_user_func([$className, "tableName"]);
+        $tableName = call_user_func([$className, 'tableName']);
 
         $current = $className::find()->where(['id' => $primaryKey])->asArray()->one();
 
@@ -79,7 +79,7 @@ class DbHistoryLogger extends BaseHistoryLogger implements RetrievableHistoryLog
 
         foreach ($query->all() as $element) {
             $uuid = $element['action_uuid'];
-            if(!isset($changes[$uuid])) {
+            if (!isset($changes[$uuid])) {
                 $changes[$uuid] = $current;
             }
             $changes[$uuid][$element['field_name']]=$element['old_value'];
