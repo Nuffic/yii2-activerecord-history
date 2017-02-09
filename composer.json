@@ -14,6 +14,7 @@
     }
   },
   "require": {
+    "yiisoft/yii2": "*",
     "p2made/yii2-uuid": "*"
   }
 }

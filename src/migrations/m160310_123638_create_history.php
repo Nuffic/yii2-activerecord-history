@@ -1,8 +1,11 @@
 <?php
 
+namespace nuffic\activerecord\history\migrations;
+
 use nuffic\activerecord\history\extensions\DbHistoryLogger;
 use yii\base\InvalidConfigException;
 use yii\db\Migration;
+use Yii;
 
 class m160310_123638_create_history extends Migration
 {
@@ -29,7 +32,7 @@ class m160310_123638_create_history extends Migration
             'old_value'   => $this->text(),
             'event'       => $this->integer(1)->notNull(),
             'action_uuid' => $this->string(36)->notNull(),
-            'created_at'  => $this->timestamp()->notNull(),
+            'created_at'  => $this->integer()->notNull(),
         ]);
 
         $this->createIndex('in_history_table_name_field_id', $this->historyLogger->tableName, ['table_name', 'field_id']);
