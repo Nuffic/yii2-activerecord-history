@@ -15,6 +15,6 @@
   },
   "require": {
     "yiisoft/yii2": "*",
-    "p2made/yii2-uuid": "*"
+    "ramsey/uuid": "^3.7.0"
   }
 }
