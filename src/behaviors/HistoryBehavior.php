@@ -33,11 +33,12 @@ class HistoryBehavior extends Behavior
         /**
          * @var \nuffic\activerecord\history\extensions\HistoryLoggerInterface
          */
-        $historyComponent = $this->getComponent();;
+        $historyComponent = $this->getComponent();
+        
         if (!($historyComponent instanceof RetrievableHistoryLoggerInterface)) {
             throw new \yii\base\NotSupportedException(Yii::t('arHistory', '{className} does not support retrieving history', [
-                    'className' => $this->getComponent()->className()
-                ]));
+                'className' => $this->getComponent()->className()
+            ]));
         }
         return $historyComponent->retrieve($this->owner->className(), $this->owner->primaryKey);
     }

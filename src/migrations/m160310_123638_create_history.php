@@ -1,8 +1,11 @@
 <?php
 
+namespace nuffic\activerecord\history\migrations;
+
 use nuffic\activerecord\history\extensions\DbHistoryLogger;
 use yii\base\InvalidConfigException;
 use yii\db\Migration;
+use Yii;
 
 class m160310_123638_create_history extends Migration
 {
