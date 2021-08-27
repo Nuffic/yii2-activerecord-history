@@ -3,15 +3,14 @@
 namespace nuffic\activerecord\history\extensions;
 
 use Ramsey\Uuid\Uuid;
-
-use yii\db\BaseActiveRecord;
-use yii\di\Instance;
-use yii\db\Connection;
-use yii\helpers\Json;
-use yii\db\AfterSaveEvent;
 use yii\base\ModelEvent;
-use yii\db\Query;
 use yii\data\ArrayDataProvider;
+use yii\db\AfterSaveEvent;
+use yii\db\BaseActiveRecord;
+use yii\db\Connection;
+use yii\db\Query;
+use yii\di\Instance;
+use yii\helpers\Json;
 
 class DbHistoryLogger extends BaseHistoryLogger implements RetrievableHistoryLoggerInterface
 {
