@@ -8,6 +8,7 @@ use yii\data\ArrayDataProvider;
 use yii\db\AfterSaveEvent;
 use yii\db\BaseActiveRecord;
 use yii\db\Connection;
+use yii\db\Expression;
 use yii\db\Query;
 use yii\di\Instance;
 use yii\helpers\Json;
@@ -63,6 +64,12 @@ class DbHistoryLogger extends BaseHistoryLogger implements RetrievableHistoryLog
     {
         $tableName = call_user_func([$className, 'tableName']);
 
+        $primaryKey = is_array($primaryKey) ? Json::encode($primaryKey) : $primaryKey;
+
+        if ($this->db->driverName === 'mysql') {
+            $primaryKey = new Expression('BINARY :primary_key', ['primary_key' => $primaryKey]);
+        }
+
         $current = $className::find()->where(['id' => $primaryKey])->asArray()->one();
 
         $query = new Query();
@@ -76,7 +83,7 @@ class DbHistoryLogger extends BaseHistoryLogger implements RetrievableHistoryLog
 
         $changes = [];
 
-        foreach ($query->all() as $element) {
+        foreach ($query->all($this->db) as $element) {
             $uuid = $element['action_uuid'];
             if (!isset($changes[$uuid])) {
                 $changes[$uuid] = $current;
