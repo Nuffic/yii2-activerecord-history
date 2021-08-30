@@ -3,15 +3,15 @@
 namespace nuffic\activerecord\history\extensions;
 
 use Ramsey\Uuid\Uuid;
-
-use yii\db\BaseActiveRecord;
-use yii\di\Instance;
-use yii\db\Connection;
-use yii\helpers\Json;
-use yii\db\AfterSaveEvent;
 use yii\base\ModelEvent;
-use yii\db\Query;
 use yii\data\ArrayDataProvider;
+use yii\db\AfterSaveEvent;
+use yii\db\BaseActiveRecord;
+use yii\db\Connection;
+use yii\db\Expression;
+use yii\db\Query;
+use yii\di\Instance;
+use yii\helpers\Json;
 
 class DbHistoryLogger extends BaseHistoryLogger implements RetrievableHistoryLoggerInterface
 {
@@ -62,7 +62,13 @@ class DbHistoryLogger extends BaseHistoryLogger implements RetrievableHistoryLog
 
     public function retrieve($className, $primaryKey)
     {
-        $tableName = call_user_func([$className, "tableName"]);
+        $tableName = call_user_func([$className, 'tableName']);
+
+        $primaryKey = is_array($primaryKey) ? Json::encode($primaryKey) : $primaryKey;
+
+        if ($this->db->driverName === 'mysql') {
+            $primaryKey = new Expression('BINARY :primary_key', ['primary_key' => $primaryKey]);
+        }
 
         $current = $className::find()->where(['id' => $primaryKey])->asArray()->one();
 
@@ -77,9 +83,9 @@ class DbHistoryLogger extends BaseHistoryLogger implements RetrievableHistoryLog
 
         $changes = [];
 
-        foreach ($query->all() as $element) {
+        foreach ($query->all($this->db) as $element) {
             $uuid = $element['action_uuid'];
-            if(!isset($changes[$uuid])) {
+            if (!isset($changes[$uuid])) {
                 $changes[$uuid] = $current;
             }
             $changes[$uuid][$element['field_name']]=$element['old_value'];
