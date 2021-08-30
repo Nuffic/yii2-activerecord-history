@@ -25,5 +25,8 @@
   ],
   "require-dev": {
     "phpunit/phpunit": "^5.0.0"
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit"
   }
 }
