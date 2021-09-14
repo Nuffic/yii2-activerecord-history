@@ -26,13 +26,16 @@ abstract class DatabaseTestCase extends TestCase
         parent::setUp();
         $databases = self::getParam('databases');
         $this->database = $databases[$this->driverName];
-        $pdo_database = 'pdo_'.$this->driverName;
+        $pdo_database = $this->driverName;
         if ($this->driverName === 'oci') {
             $pdo_database = 'oci8';
         }
+        if ($this->driverName === 'sqlite') {
+            $pdo_database = 'sqlite3';
+        }
 
-        if (!extension_loaded('pdo') || !extension_loaded($pdo_database)) {
-            $this->markTestSkipped('pdo and '.$pdo_database.' extension are required.');
+        if (!extension_loaded($pdo_database)) {
+            $this->markTestSkipped($pdo_database . ' extension are required.');
         }
         $this->mockApplication();
     }
@@ -65,7 +68,6 @@ abstract class DatabaseTestCase extends TestCase
         try {
             $this->_db = $this->prepareDatabase($config, $fixture, $open);
         } catch (\Exception $e) {
-            var_dump($e);
             $this->markTestSkipped("Something wrong when preparing database: " . $e->getMessage());
         }
         return $this->_db;
