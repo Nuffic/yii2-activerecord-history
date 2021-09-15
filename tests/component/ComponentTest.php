@@ -2,14 +2,14 @@
 
 namespace yiiunit\nuffic\activerecord\history\component;
 
-use yiiunit\nuffic\activerecord\history\DatabaseTestCase;
-
 use nuffic\activerecord\history\extensions\DbHistoryLogger;
-use yii\db\AfterSaveEvent;
+
 use yii\base\ModelEvent;
-use yiiunit\nuffic\activerecord\history\data\ar\Car;
-use yiiunit\nuffic\activerecord\history\data\ar\ActiveRecord;
+use yii\db\AfterSaveEvent;
 use yii\db\Query;
+use yiiunit\nuffic\activerecord\history\data\ar\ActiveRecord;
+use yiiunit\nuffic\activerecord\history\data\ar\Car;
+use yiiunit\nuffic\activerecord\history\DatabaseTestCase;
 
 /**
 *

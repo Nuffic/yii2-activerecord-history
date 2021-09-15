@@ -2,10 +2,10 @@
 
 namespace yiiunit\nuffic\activerecord\history\migrations;
 
-use yiiunit\nuffic\activerecord\history\DatabaseTestCase;
-use yii\helpers\ArrayHelper;
 use nuffic\activerecord\history\extensions\DbHistoryLogger;
 use Yii;
+use yii\helpers\ArrayHelper;
+use yiiunit\nuffic\activerecord\history\DatabaseTestCase;
 
 /**
 *
@@ -33,8 +33,8 @@ abstract class BaseMigrationTest extends DatabaseTestCase
         $controller = new EchoMigrateController('hue', $app, [
             'db' => $connection,
             'interactive' => false,
-            'migrationNamespaces' => [
-                'nuffic\activerecord\history\migrations'
+            'migrationPath' => [
+                '@nuffic/activerecord/history/migrations/',
             ]
         ]);
         $controller->runAction('up');
