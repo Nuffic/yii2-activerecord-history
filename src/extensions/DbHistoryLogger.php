@@ -52,6 +52,9 @@ class DbHistoryLogger extends BaseHistoryLogger implements RetrievableHistoryLog
         }
 
         $batch = array_map(function ($changedAttribute, $oldValue) use ($tableName, $pk, $changed, $actionUuid, $actionEvent) {
+            if (is_array($oldValue)) {
+                $oldValue = Json::encode($oldValue);
+            }
             return [$tableName, $pk, $changedAttribute, $oldValue, $changed, $actionUuid, $actionEvent];
         }, array_keys($changedAttributes), array_values($changedAttributes));
 
@@ -91,7 +94,7 @@ class DbHistoryLogger extends BaseHistoryLogger implements RetrievableHistoryLog
             $changes[$uuid][$element['field_name']]=$element['old_value'];
             $current = $changes[$uuid];
         }
-        
+
         $models = array_map(function ($element) use ($className){
             $model = $className::instantiate($element);
             $className::populateRecord($model, $element);
